@@ -41,9 +41,8 @@ class Hangman(io: IODevice) {
       breakable {
         io.printLine("Guess a letter:")
         val user_letter = io.readLine()
-        if (letters.indexOf(user_letter) < 0) {
+        if (user_word.indexOf(user_letter) >= 0 || letters.indexOf(user_letter) < 0) {
           faults += 1
-          io.printLine(stages(faults - 1))
           break
         }
         for (n <- user_word.indices) {
@@ -53,7 +52,10 @@ class Hangman(io: IODevice) {
           }
         }
       }
-      io.printLine("Word: " + user_word.mkString(""))
+      if (faults > 0)
+        io.printLine(stages(faults - 1))
+      if (faults != stages.size)
+        io.printLine("Word: " + user_word.mkString(""))
     }
     if (faults == stages.size)
       io.printLine("You are dead")
